@@ -1,0 +1,81 @@
+------------------------------------------
+Setup deployment cluster on local machine
+------------------------------------------
+
+1. install vagrant
+2. install ansible
+
+3. checkout common.deployment.scripts project from gitlab
+4. switch to dev branch
+
+5. go to the directory "common.deployment.scripts/vagrant"
+6. run script "./vagrantdev.sh up", wait until the execution terminates
+
+7. go to the directory "common.deployment.scripts"
+8. run the command "dev-ansible-playbook.sh site.yml"
+
+------------------------------------------
+check vagrant version
+------------------------------------------
+> vagrant -v
+
+------------------------------------------
+Shutdown vagrant cluster
+------------------------------------------
+1. go to the directory "common.deployment.scripts/vagrant"
+2. run the command "./vagrantdev.sh halt"
+
+
+------------------------------------------
+SSH to the vagrant cluster machine
+------------------------------------------
+1. go the the directory common.deployment.scripts/vagrant/vms/<vm machine>
+2. run command "vagrant ssh"
+
+
+------------------------------------------
+git check remote branches
+------------------------------------------
+> git branch -r
+
+------------------------------------------
+Create a local branch and make it to track the remote one
+------------------------------------------
+> get checkout -b dev origin/dev
+
+------------------------------------------
+Database login
+------------------------------------------
+
+username: mysql_admin
+password: silanis1
+
+
+------------------------------------------
+Backoffice default login/password
+------------------------------------------
+username: admin
+password: password
+
+------------------------------------------
+Short-cut for creating a new tab on the terminal window
+------------------------------------------
+ctrl + shift + t
+
+------------------------------------------
+Action address entry bar on directory navigation window
+------------------------------------------
+ctrl + l
+
+------------------------------------------
+HP elite book bios access key
+------------------------------------------
+F10
+
+------------------------------------------
+Access application
+------------------------------------------
+Front end: https://loadbalancer/login
+Back office: http://loadblancer/backoffice
+
+
