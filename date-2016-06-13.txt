@@ -1,5 +1,43 @@
+#############################################################
+######### TECHNICAL NOTE ####################################
+#############################################################
+
 ----------------------------------
 Copy paste ubuntu terminal
 ----------------------------------
 copy:  ctrl + shift + C
 paste: ctrl + shift + V
+
+
+----------------------------------
+Generate ssh key
+----------------------------------
+$ ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+
+# Creates a new ssh key, using the provided email as a label
+Generating public/private rsa key pair.
+
+
+----------------------------------
+Add SSH key to ssh-agent
+----------------------------------
+
+1. Ensure ssh-agent is enabled:
+
+# start the ssh-agent in the background
+eval "$(ssh-agent -s)"
+Agent pid 59566
+
+2. Add your SSH key to the ssh-agent. 
+   If you used an existing SSH key rather than generating a new SSH key, 
+   you'll need to replace id_rsa in the command with the name of your existing private key file.
+
+$ ssh-add ~/.ssh/id_rsa
+
+
+
+#############################################################
+######### NON TECHNICAL NOTE ################################
+#############################################################
+
+
