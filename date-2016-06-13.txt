@@ -35,6 +35,34 @@ Agent pid 59566
 $ ssh-add ~/.ssh/id_rsa
 
 
+----------------------------------
+Git command
+----------------------------------
+
+*****************
+1. Show the history of the command
+$ git log -3
+
+*****************
+2. keep local repository sync with the remote upstream one
+
+$ git fetch
+$ git merge origin/master - a fastforward merge
+
+A short cut for these two command is
+$ git pull
+
+
+----------------------------------
+unzip a zip file on ubuntu
+----------------------------------
+we have to install the unzip tool to unzip the zip file on ubuntu.
+
+$ sudo apt-get install unzip
+
+
+
+
 
 #############################################################
 ######### NON TECHNICAL NOTE ################################

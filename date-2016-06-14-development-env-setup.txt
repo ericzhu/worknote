@@ -1,0 +1,109 @@
+-----------------------------------------
+Start, restart and stop MySQL service
+-----------------------------------------
+/etc/init.d/mysql stop
+/etc/init.d/mysql start
+/etc/init.d/mysql restart
+
+
+
+-----------------------------------------
+Check the status of the mysql server
+-----------------------------------------
+/etc/init.d/mysql status
+
+  mysql.service - MySQL Community Server
+   Loaded: loaded (/lib/systemd/system/mysql.service; enabled; vendor preset: enabled)
+   Active: inactive (dead) since Tue 2016-06-14 14:14:57 EDT; 36s ago
+  Process: 589 ExecStartPost=/usr/share/mysql/mysql-systemd-start post (code=exited, status=0/SUCCESS)
+  Process: 588 ExecStart=/usr/sbin/mysqld (code=exited, status=0/SUCCESS)
+  Process: 585 ExecStartPre=/usr/share/mysql/mysql-systemd-start pre (code=exited, status=0/SUCCESS)
+ Main PID: 588 (code=exited, status=0/SUCCESS)
+
+
+
+
+-----------------------------------------
+JDK crypto extension issues issues
+-----------------------------------------
+
+1. check if the jce is installed.
+ - find the jce-verifier.jar from jira
+ - run the following command to verifier
+   $ java -jar ~/Downloads/jce-verifier.jar
+
+2. if failed.
+ - Download jce extention from oracle website
+ - unzip the file copy all the jars to the $JAVA_HOME/jre/lib/security
+
+
+
+-----------------------------------------
+Set up development
+-----------------------------------------
+1. Change the root user password to silanis1
+
+* MySQL 5.7.6 and later:
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY 'MyNewPass';
+
+* MySQL 5.7.5 and earlier:
+mysql> SET PASSWORD FOR 'root'@'localhost' = PASSWORD('MyNewPass');
+
+2. Create user aws for %, localhost, 127.0.0.1 with the DBA previlege
+3. Create database aws_esl with the UTF-8 charset
+
+4. Go the the directory "esl.backend/server/esl-database"
+5. Run command $ mvn clean install
+5. Run the maven command 
+   - $ mvn flyway:init -- init flyway, it will try to connect to db and create version_schema table
+   - $ mvn flyway:clean mvn flyway:migrate
+
+
+
+-----------------------------------------
+Configure JBOSS/wildfly in IntelliJ 
+-----------------------------------------
+
+-Dspring.profiles.active=dev,externalStubbed 
+-Ddebug-request=true -XX:MaxPermSize=1024M 
+-Djboss.vfs.forceCopy=false 
+-Dhibernate.show_sql=false
+
+add the following ear to the deployment
+esl.ear
+esl-auth.ear
+backoffice.war
+
+
+-----------------------------------------
+Switch to the super user mode
+-----------------------------------------
+$ sudo -s
+# -- changed to the super user mode
+
+
+----------------------------------------------
+ngnix rewrite config location on load balancer
+----------------------------------------------
+/etc/nginx/sites-available/main-rewriterules
+
+
+----------------------------------------------
+ngnix config location on load balancer
+----------------------------------------------
+/etc/nginx/conf.d
+
+
+
+--------------------------------------------------
+How to inject local environment to vagrant cluster
+--------------------------------------------------
+
+
+--------------------------------------------------
+Find backend core configuration
+--------------------------------------------------
+SELECT * FROM esl.ESL_RESOURCE where RESOURCE_KEY Like '%core%';
+
+
+
