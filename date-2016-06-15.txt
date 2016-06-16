@@ -1,0 +1,75 @@
+---------------------------------------------
+Check java process on Linux machine
+---------------------------------------------
+$ jps -l                ** list the java process
+$ jps -v                ** list process and jvm args
+$ jps -m                ** show the loader the class and jar file
+
+to show all java process, we may need to login as admin
+
+---------------------------------------------
+Check the network connection on Linux machine
+---------------------------------------------
+$ netstat -ntlp
+
+---------------------------------------------
+Reboot or shutdown linux machine
+---------------------------------------------
+# /sbin/reboot            ** reboot the machine
+# /sbin/shutdown -r now   ** shutdown the machine
+
+---------------------------------------------
+Copy file from local machine to remote machine
+---------------------------------------------
+$ scp vagrant@remotehost.edu:/etc/foobar.txt /some/local/directory
+$ scp vagrant@remotehost.edu:/etc/foobar.txt .
+
+
+---------------------------------------------
+Copy file from remote machine to local machine
+---------------------------------------------
+$ scp foobar.txt vagrant@remotehost.edu:~/temp
+
+** copy multiple file to remote machine
+$ scp foo.txt bar.txt vagrant@remotehost.edu:~
+
+--------------------------------------------
+Comment in Hosts file
+--------------------------------------------
+
+hash sign # is the comment in hosts file (windows and linux)
+
+--------------------------------------------
+check the last lines of a file
+--------------------------------------------
+$ tail -100f error.log
+
+The content is will update dynamicaly.
+
+--------------------------------------------
+Ngnix log files directory
+--------------------------------------------
+cd /var/log/nginx/
+
+--------------------------------------------
+Ngnix config directory
+--------------------------------------------
+cd /etc/nginx/conf.d/
+
+--------------------------------------------
+project to be deployed on backend wildfly
+--------------------------------------------
+esl.ear
+esl-auth.ear
+backoffice.war
+
+--------------------------------------------
+Tail esl-backent log
+--------------------------------------------
+[vagrant@backendplatform1 ~]$ tail -500f /opt/wildfly/esl-backend/log/server.log
+
+
+
+
+
+

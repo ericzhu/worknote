@@ -1,0 +1,139 @@
+--------------------------------------------------
+Activate a environment variable
+--------------------------------------------------
+Change the /etc/profile, then apply it
+
+$ source /etc/profile
+
+
+
+--------------------------------------------------
+What is new in wildfly 8
+--------------------------------------------------
+Arrival of Undertow: 
+JBoss Web has been completely removed and replaced with Undertow. 
+Undertow is a cutting-edge web server that supports non-blocking and blocking handlers, web sockets, and asynchronous servlets.
+
+Port Reduction: 
+The number of open ports has been greatly reduced in WildFly. Only two ports are open: 8080 and 9990. 
+This has been achieved by multiplexing protocols over HTTP using the HTTP upgrade feature of Undertow.
+
+Security Manager: 
+You can now configure per-deployment security permissions
+
+Logging: 
+Several enhancements have been made to WildFly logging. 
+You can now view logfiles via the management interface, define custom formatters, and configure logging per-deployment.
+
+Clustering: 
+Clustering in WildFly is heavily refactored and includes many new features, including web sessions, single sign-on, and mod_cluster support for Undertow. 
+There is also a new public clustering API and new @Stateful EJB caching implementation.
+
+Command-line interface (CLI): 
+You now have the ability to define an alias when connecting to a server, 
+and the CLI GUI has additional functionality allowing you to explore any node in the tree.
+
+---------------------------------------------------
+Install and start wildfly 8
+---------------------------------------------------
+For Linux/Unix users:
+$ ./standalone.sh
+
+For Windows users:
+> standalone.bat
+
+This command starts up a WildFly "standalone instance". 
+That's equivalent to starting the application server with the run.sh script used by releases prior to JBoss AS 7. 
+The run.sh file remains in the WildFly bin directory but is merely a placeholder and will not start the application server.
+
+If you need to customize the startup properties of your application server, then you need to open and modify the "standalone.conf" file
+
+PermGen has been replaced with Metaspace in Java 8. 
+If you are using Java 8, then remove the 
+
+-XX:MaxPermSize=256m 
+property from the standalone.conf file, and replace it with
+ 
+-XX:MaxMetaspaceSize=256m. 
+This will prevent VM warnings being printed to your WildFly logs on startup.
+
+
+---------------------------------------------------
+Startup command line interface cli
+---------------------------------------------------
+1. go to wildfly bin directory
+2. run the command
+   $ ./jboss-cli.sh
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>
+You are disconnected at the moment. Type 'connect' to connect to the server or 'help' for the list of supported commands.
+[disconnected /] connect
+[standalone@localhost:9990 /]
+<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+--------------------------------------------------
+Stop wildfly
+--------------------------------------------------
+1. start cli
+2. run the command
+   $ shutdown
+
+--------------------------------------------------
+Restart wildfly
+--------------------------------------------------
+1. start cli
+2. run the command
+   $ reload
+
+--------------------------------------------------
+Wildfly fold structure
+--------------------------------------------------
+Its filesystem is basically divided into two core parts: 
+ * standalone servers
+ * domain servers
+
+The docs folder
+
+The docs folder contains two subfolders, examples and schema. 
+The schema folder contains all the .xsd schema definition files used by the configuration as schema.
+
+The examples folder contains numerous configuration examples, from a minimalistic standalone example to an ec2 HA example 
+(HA meaning high availability, and ec2 referring to Amazon Elastic Compute Cloud).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
