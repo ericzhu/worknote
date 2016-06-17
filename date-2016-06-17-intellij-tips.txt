@@ -1,0 +1,322 @@
+---------------------------------------
+Refactor rename shift + F6
+---------------------------------------
+
+Rename your classes, methods and variables with automatic correction of all places where they are used.
+To try it, place the caret at the symbol you want to rename, and press Shift+F6 (Refactor | Rename). 
+Type the new name in the popup window that appears, or select one of the suggested names, and press Enter.
+
+
+---------------------------------------
+Override method of base class:   ctrl + o
+Implement a method of interface: ctrl + i
+---------------------------------------
+Override methods of the base class by pressing Ctrl+O (Code | Override Methods).
+To implement methods of the interfaces that the current class implements (or of the abstract base class), use Ctrl+I (Code | Implement methods).
+
+---------------------------------------
+SmartType: Ctrl+Shift+Space
+---------------------------------------
+
+
+
+The SmartType code completion greatly helps to find methods and variables that are suitable in the current context, 
+by analyzing the expected type of the whole expression. So doing, IntelliJ IDEA pinpoints the top five most suitable results and highlights them on the green background. For example, type
+
+---------------------------------------
+---------------------------------------
+
+When using Code Completion, you can accept the currently highlighted selection in the popup list with Tab key.
+Unlike accepting with the Enter key, the selected name will overwrite the rest of the name to the right of the caret. This can be especially useful for replacing one method or variable name with another.
+
+
+---------------------------------------
+Close a tab of editor
+---------------------------------------
+
+Did you know that you can close tabs in the editor and the tool windows of IntelliJ IDEA without actually using the context menu commands? 
+It is enough to point with your mouse cursor to a tab to be closed, and click the middle mouse button, or just use the Shift+click combination.
+
+
+--------------------------------------
+Generate getters and setters
+--------------------------------------
+
+Using Alt+Insert (Code | Generate) in the editor, you can easily generate getter and setter methods for any fields of your class.
+
+--------------------------------------
+--------------------------------------
+
+To quickly select the currently edited element (class, file, method or field) in any view (Project view, Structure view or other), press Alt+F1.
+
+
+
+The Escape key in any tool window moves the focus to the editor.
+Shift+Escape moves the focus to the editor and also hides the current (or last active) tool window.
+The F12 key moves the focus from the editor to the last focused tool window.
+
+
+
+When you want to catch exceptions thrown by some code fragment, select it in the editor, 
+press Ctrl+Alt+T (Code | Surround With) and choose try / catch. The catch blocks for all the exceptions thrown inside the block will be generated automatically.
+You can customize the bodies of the generated catch blocks on the Code tab of File | Settings | File and Code Templates.
+Use other items in the list to surround with other constructs.
+
+
+
+To navigate to the implementation(s) of an abstract method, position the caret at its usage or its name in the declaration and press Ctrl+Alt+B.
+
+
+Ctrl+W (extend selection) in the editor selects the word at the caret and then selects expanding areas of the source code. For example, it may select a method name, then the expression that calls this method, then the whole statement, then the containing block, etc. You can also select the word at the caret and the expanding areas of the source code by double-clicking the target areas in the editor.
+
+
+The Extract Variable refactoring helps you simplify complicated statements in your code. For example, in the code fragment below, you can select an expression in the code:
+ 
+and press Ctrl+Alt+V (Refactor | Extract | Variable...). This will result in the following:
+
+
+
+
+
+
+
+
+
+
+
+You can comment or uncomment lines and blocks of code using Ctrl+Slash and Ctrl+Shift+Slash.
+Ctrl+Slash comments or uncomments the current line or selected block with single line comments (//...).
+Ctrl+Shift+Slash encloses the selected block in a block comment (/*...*/).
+To uncomment a commented block press Ctrl+Shift+Slash anywhere inside it.
+
+
+
+To open your browser with documentation for the element at the editor's caret, press Shift+F1 (View | External Documentation).
+You must have the path to your browser set in the File | Settings | Web Browsers options and paths to documentation files added to your project (File | Project Structure...) to use this feature.
+
+When you need to cast an expression value to the required type the SmartType code completion will help you. For example, type
+String s = (<caret is here> 
+and press Ctrl+Shift+Space to see what happens.
+
+
+Ctrl+D in the editor duplicates the selected block or the current line when no block is selected.
+
+
+
+
+
+Try Live Templates
+Live Templates allow you to generate many typical code constructs in seconds! For example, type
+ 
+in a method and press the Tab key to see what happens.
+
+
+
+
+
+The CodeCompletion feature can suggest a name for a variable when you declare it. For example, start typing
+private FileOutputStream
+and press Ctrl+Space.
+
+
+If the cursor is between the parentheses of a method call, pressing Ctrl+P brings up a list of valid parameters.
+
+
+
+Ctrl+Shift+Backspace (Navigate | Last Edit Location) brings you back to the last place where you made changes in the code.
+Pressing Ctrl+Shift+Backspace a few times moves you deeper into your changes history.
+
+
+
+Use Ctrl+Shift+F7 (Edit | Find | Highlight Usages in File) to quickly highlight usages of some variable in the current file.
+Use F3 and Shift+F3 keys to navigate through highlighted usages.
+Press Escape to remove highlighting.
+
+
+
+
+Use Code | Reformat Code to reformat code according to your code style preferences (File | Settings | Code Style).
+You can also use Code | Optimize Imports to automatically optimize imports (remove unused imports, etc.). To access the corresponding settings, use File | Settings | Code Style | Imports.
+
+
+
+To see your local history of changes in a file, invoke Local History | Show History from the context menu. You can navigate through different file versions, see the differences and roll back to any previous version.
+Use the same context menu item to see the history of changes on a directory. You will never lose any code with this feature!
+
+
+
+
+Press Alt+Q (View | Context Info) to see the declaration of the current method without the need to scroll to it.
+
+
+
+Ctrl+E (View | Recent Files) brings a popup list of the recently visited files. Choose the desired file and press Enter to open it.
+
+
+
+Use F2/Shift+F2 keys to jump between highlighted syntax errors.
+Use Ctrl+Alt+Up/Ctrl+Alt+Down shortcuts to jump between compiler error messages or search operation results.
+To skip warnings right click on the validation side bar / marker bar and choose Go to high priority problems only
+
+
+
+
+Use Ctrl+J to complete any valid Live Template abbreviation if you don't remember it. For example, type it and press Ctrl+J to see what happens.
+
+
+When using basic code completion (Ctrl+Space), type any characters that exist anywhere in an identifier.
+
+
+Use Alt+Up and Alt+Down keys to quickly move between methods in the editor.
+
+
+Ctrl+Shift+J shortcut joins two lines into one and removes unnecessary space to match your code style.
+
+Use Refactor | Copy to create a class which is a copy of the selected class. This can be useful, for example, when you need to create a class which has much in common with some existing class and it's not feasible to put the shared functionality in a common superclass.
+
+
+Use the Ctrl+Shift+V shortcut to choose and insert recent clipboard contents into the text.
+
+To see the inheritance hierarchy for a selected class, press Ctrl+H (Navigate | Type Hierarchy). You can also invoke the hierarchy view right from the editor to see the hierarchy for the currently edited class.
+
+
+
+-------------------------------------------
+Add conditions or other properties to
+debug breakpoint
+-------------------------------------------
+
+Right-clicking on a breakpoint marker (on the bar to the left from the text) invokes the speedmenu where you can quickly enable/disable the breakpoint or adjust its properties.
+
+
+-------------------------------------------
+Debug evaluate expression
+-------------------------------------------
+To easily evaluate the value of any expression while debugging the program, select its text in the editor (you may press a Ctrl+W a few times to efficiently perform this operation) and press Alt+F8.
+
+
+To quickly evaluate the value of any expression while debugging the program, hold Alt and click this expression to see its value and calculate it, call a method, etc.
+
+
+The shortcuts such as Ctrl+Q (View | Quick Documentation), Ctrl+P (View | Parameter Info), Ctrl+B (Navigate | Declaration) and others can be used not only in the editor but in the code completion popup list as well.
+
+
+When using Code Completion, you can accept the currently highlighted selection in the popup list with the period character (.), comma (,), semicolon (;), space and other characters.
+The selected name is automatically entered in the editor followed by the entered character.
+
+
+To help you learn the purpose of each item in the main menu, its short description is shown in the status bar at the bottom of the application frame when you position the mouse pointer over this item.
+
+
+
+For the pattern search in the Go to Class, Go to Symbol and Go to File pop-up frames, use * and space symbols.
+* stands for any symbol.
+Space at the end means the end of a pattern, and the preceding string will be considered not just a prefix but a whole pattern. The list of the suggested names will be reduced accordingly.
+
+
+You can use the Extract Variable refactoring even on incomplete statements. Just press Ctrl+Alt+V, and choose the desired expression:
+
+
+
+---------------------------------------
+Open any particular method or variable
+---------------------------------------
+
+To open any particular method or field in the editor quickly, press Ctrl+Alt+Shift+N (Navigate | Symbol) and start typing its name.
+Choose symbol from the drop-down list that appears.
+
+
+
+
+Use Alt+Shift+C to quickly review your recent changes to the project.
+
+Use Ctrl+Shift+Enter to complete a current statement such as if, do-while, try-catch, return (or a method call) into a syntactically correct construct (e.g. add curly braces).
+
+
+
+When in the Go to Class, Go to Symbol, or Go to File popup, you can ease the search by filtering the lookup list with the help of the "camel words" prefixes.
+
+
+
+---------------------------------------
+Short-cut for accessing run/debug (configuration)
+---------------------------------------
+By pressing Alt+Shift+F10 you can access the Run/Debug dropdown on the main toolbar, without the need to use your mouse.
+
+
+
+The Quick Definition Viewer (Ctrl+Shift+I) can also be used for items in lookup lists that appear on code completion and class/file/symbol navigaton commands.
+
+
+
+You can use Basic Completion (Ctrl+Space) within Java String literals and in other file types, for completing .properties keys
+
+-------------------------------------
+Quickly open a maven project
+-------------------------------------
+
+
+You can quickly open a Maven project by selecting a pom.xml file in the File | Open dialog. The corresponding Maven project is imported with default settings, without launching the wizard.
+
+If you don't want to commit some of your changes to the repository, you can set them aside for a while, by moving to a separate changelist, or by putting them to a shelf. Select such file in the Local tab of the Changes tool window, and on the context menu choose Move to Another Changelist, or Shelve Changes.
+
+
+------------------------------------
+Open eclipse project in intellij
+------------------------------------
+
+You can quickly open an Eclipse project by selecting a .classpath or .project file in the File | Open dialog. The corresponding Eclipse project is imported with default settings, without launching the wizard.
+
+
+
+--------------------------------------
+Show all the classes that use this method
+--------------------------------------
+You can bring forward the list of all usages of a class, method or variable across the whole project, and quickly jump to the selected usage. To do that, place the caret at the symbol's name or at its usage in code and press Ctrl+Alt+7 (Edit | Find | Show Usages in the main menu), scroll the list and click the desired usage.
+
+
+
+------------------------------------------
+Short cut for finding all the menu command
+------------------------------------------
+
+To quickly find a menu command or toolbar action, you do not need to look through the menus. Just press Ctrl+Shift+A (Help | Find Action on the main menu) and start typing the name of the action. Choose the desired action from the suggestion list.
+
+
+
+
+
+To quickly find and run an inspection, press Ctrl+Alt+Shift+I and start typing the name of the inspection or its group. Choose the desired inspection from the suggestion list and then specify the desired scope.
+
+
+------------------------------------------
+Code block construct auto completion
+------------------------------------------
+
+You can create code constructs using statement completion. Start typing a method declaration or a statement, and press Ctrl+Shift+Enter after the opening parenthesis. The braces are created, with the caret placed inside:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
