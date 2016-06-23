@@ -1,0 +1,166 @@
+-----------------------------------------
+Change hostname on centos
+-----------------------------------------
+1. $ sudo vi /etc/sysconfig/network
+2. change hostname
+3. restart network interface, # /etc/init.d/network restart
+
+-----------------------------------------
+add, list and delete service on centos
+-----------------------------------------
+- Add nginx service
+# chkconfig --add nginx
+
+- Delete nginx service
+# chkconfig --del nginx
+
+- List service
+# chkconfig --list
+
+- List nginx service
+# chkconfig --list nginx
+
+----------------------------------------
+Setup ssh
+----------------------------------------
+Set up ssh so that name node can connect to the remote machine without password
+$ ssh-keygen -t rsa -- generate ssh key
+
+copy the key from name node to the 2nd name node and data node
+$ ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@namenode2nd
+$ ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@datanode1
+$ ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@datanode2
+$ ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@datanode3
+
+
+----------------------------------------
+Cluster configuration
+----------------------------------------
+
+- Changes on the name node.
+
+Change the file /hadoop/conf/masters, add the following lines
+*************
+namenode2nd
+*************
+
+Change the file /hadoop/conf/slaves, add the following lines
+*************
+datanode1
+datanode2
+datanode3
+*************
+
+- changes on the data node
+
+Change the core-site.xml on the data node and point it to the namenode
+**********************************************************
+<configuration>
+<property>
+	<name>fs.default.name</name>
+	<value>hdfs://namenode:10001</value>
+</property>
+<property>
+	<name>hadoop.tmp.dir</name>
+	<value>/usr/local/hadoop-1.2.1/tmp</value>
+</property>
+</configuration>
+**********************************************************
+
+
+Change the mapred-site.xml on the data node and point it to the jobtracker
+
+**********************************************************
+<configuration>
+<property>
+	<name>mapred.job.tracker</name>
+	<value>namenode:10002</value>
+</property>
+</configuration>
+**********************************************************
+
+
+
+----------------------------------------
+Hadoop command
+----------------------------------------
+
+1. format name node
+$ hadoop namenode -format
+
+2. start hadoop file system
+$ start-dfs.sh
+
+3. start map reduce engine
+$ start-mapred.sh
+
+4. start file system and map reduce engine
+$ start-all.sh
+
+---------------------------------------
+include or exclude nodes from the cluster
+---------------------------------------
+1. On the name node, create a file called exclude in the hadoop installation fold
+$ touch /hadoop/excludes
+
+2. add the node that you want to excludes
+ex. datanode1
+
+3. configure core-site.xml add the following
+***********************************************
+<property>
+  <name>dfs.hosts.exclude</name>
+  <value>/usr/local/hadoop-1.2.1/excludes</value>
+</property>
+***********************************************
+
+NOTE: we can also do include of nodes like, if we want only specific nodes to be included in the cluster
+***********************************************
+<property>
+  <name>dfs.hosts.include</name>
+  <value>/usr/local/hadoop-1.2.1/includes</value>
+</property>
+***********************************************
+
+4. after decommissioning, we can restart the data node or refresh nodes
+$ hadoop dfsadmin -refreshNodes
+
+
+----------------------------------------------
+After decommissioning, we need to reblance our nodes
+----------------------------------------------
+$ start-balancer.sh
+
+----------------------------------------------
+Shutdown hadoop
+----------------------------------------------
+1. shutdown name node and data node
+$ stop-dfs.sh
+
+2. shutdown job tracker and task tracker
+$ stop-mapred.sh
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

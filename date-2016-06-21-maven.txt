@@ -1,0 +1,47 @@
+----------------------------------------
+What is maven plugin and goals
+----------------------------------------
+A plugin is a collection of goals
+A goal is an action (eg. compile)
+
+
+----------------------------------------
+Maven life cycle and phase
+----------------------------------------
+Mave have 3 life cycle: default, site
+Each life cyle contains a collection of phase.
+
+We can bind the goal to the phase we want
+
+
+----------------------------------------
+Main components of maven
+----------------------------------------
+POM, dependency, lifecycle
+
+$ mvn install
+
+What we are doing is executing "install" phase of default life cycle.
+
+1. exam our pom.xml file, learn more about our project and figure out what we want to build.
+   . maven will inspect our project information
+   . look at the plugins and dependencies
+   . Dependency - library
+   . Plugin - actions, plugin has goals that dictate how the action will be performed.
+2. execute install phase. Before execute install phase, all phase preceding install will be executed.
+   for example the compile phase will be executed before install phase
+
+
+-----------------------------------------
+Setup maven project
+-----------------------------------------
+Setup a basic project
+Configure inheritance between project - for sharing project configure information, we use POM inheritance.
+Maven provide profile that can be apply when we work on a particular environment.
+
+
+
+-----------------------------------------
+Archetype plugin
+-----------------------------------------
+Archetype plugin will help us create project easily and faster.
