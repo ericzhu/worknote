@@ -141,6 +141,10 @@ $ stop-dfs.sh
 $ stop-mapred.sh
 
 
+----------------------------------------------
+Check the dfs status on the web ui
+----------------------------------------------
+http://namenode:50070/
 
 
 
