@@ -1,7 +1,6 @@
 ---------------------------------------
 Refactor rename shift + F6
 ---------------------------------------
-
 Rename your classes, methods and variables with automatic correction of all places where they are used.
 To try it, place the caret at the symbol you want to rename, and press Shift+F6 (Refactor | Rename). 
 Type the new name in the popup window that appears, or select one of the suggested names, and press Enter.
@@ -17,9 +16,6 @@ To implement methods of the interfaces that the current class implements (or of 
 ---------------------------------------
 SmartType: Ctrl+Shift+Space
 ---------------------------------------
-
-
-
 The SmartType code completion greatly helps to find methods and variables that are suitable in the current context, 
 by analyzing the expected type of the whole expression. So doing, IntelliJ IDEA pinpoints the top five most suitable results and highlights them on the green background. For example, type
 
