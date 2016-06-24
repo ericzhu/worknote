@@ -1,0 +1,293 @@
+-----------------------------------------
+3 V of data characteristics Volume, velocity, and variety
+-----------------------------------------
+
+Volume, velocity, and variety, the three big reasons we cannot use traditional computing models, 
+which is big expensive tricked out machines with lots of processors that contain lots of cores, 
+and we have lots of hard drives, rate enabled for performance and fault tolerance.
+
+
+The relational world was really designed to handle gigabytes of data, not terabytes and petabytes. 
+And what does the relational world do when they start getting too much data? 
+They archive it to tape.That is the death of data. It's no longer a part of your analysis. It's no longer a part of your business intelligence and your reporting. 
+
+Velocity is the speed at which we access data. 
+The traditional computing models, no matter how fast your computer is, your processor is still going to be bound by disk I/O, 
+because disk transfer rates haven't evolved at nearly the pace of processing power. This is why distributed computing makes more sense. 
+
+And Hadoop uses the strengths of the current computing world by bringing computation to the data. 
+Rather than bringing data to the computation, which saturates network bandwidth, it can process the data locally.
+
+And when you have a cluster of nodes all working together 
+  1. using and harnessing the power of the processor and 
+  2. reducing network bandwidth and 
+  3. mitigating the weakness of disk transfer rates, 
+we have some pretty impressive performance when processing. 
+
+
+The last V, variety, obviously relational systems can only handle the structured data. 
+Sure, they can get semi-structured and unstructured data in with some engineers that have ETL tools 
+that'll transform and scrub the data to bring it in. But that requires a lot of extra work.
+
+
+---------------------------------------------
+What is hadoop
+---------------------------------------------
+
+So let's go get interested to Hadoop and see how it solves these three challenges and talk about it's a software-based solution 
+and all the benefits we gain with that over the hardware-based solution of the traditional computing world. 
+As I mentioned earlier, Hadoop is this distributed software solution.
+
+It is a scalable, fault-tolerant, distributive system for data storage and processing. 
+There's two main components in Hadoop, HDFS, which is the storage, and MapReduce, which is the retrieval and the processing. 
+
+HDFS is this self-healing high-bandwidth clustered storage. And it's pretty awesome stuff. What would happen here is if we were to put a petabyte file inside of our Hadoop cluster, HDFS would break it up into blocks and then distribute it across all the nodes in our cluster. On top of that-- and this is where the fault tolerance side is going to come in a play-- when we configure HDFS, we're going to set up a replication factor.
+
+00:12:47
+By default, it's set at 3. What that means is when we put this file in Hadoop, it's going to make sure that there are three copies of every block that make up that file spread across all the nodes in the cluster. That's pretty awesome. And why that's awesome is because if we lose a node, it's going to self-heal.
+
+00:13:04
+It's going to say, oh, I know what data was on that node. I'm just going to re-replicate the blocks that were on that node to the rest of the servers inside of the cluster. And how it does it is this. It has a NameNode and a DataNode. Generally, you have one NameNode per cluster, and then all the rest of these here going to be DataNodes.
+
+00:13:21
+And we'll get into more details of the roles and secondary NameNode nodes and all that stuff when we get there. But essentially, the NameNode is just a metadata server. It just holds in memory the location of every block and every node. And even if you have multiple racks set up, it'll know where blocks exist on what note on what rack spread across the cluster inside your network.
+
+00:13:40
+So that's the secret sauce behind HDFS, and that's how we're fault-tolerant and redundant, and it's just really awesome stuff. Now how we get data is through MapReduce. And as the name implies, it's really a two-step process. There's a little more to that.
+
+00:13:53
+But again, we're going to keep this high level. So we'll get into MapReduce. We've got a few Nuggets on MapReduce. We'll get in down to the nitty-gritty details, and we'll also break out Java and write some MapReduce jobs on our own. But it's a two-step process at the surface.
+
+00:14:06
+There's a mapper and a reducer. Programmers will write the mapper function, which will go out and tell the cluster what data points we want to retrieve. The reducer will then take all that data and aggregate it. So again, Hadoop is a batch-processing-based system.
+
+00:14:23
+And we're working on all of the data in the cluster. We're not doing any seeking or anything like that. Seeks are what slows down data retrieval. MapReduce is all about working on all of the data inside of our cluster. And MapReduce produce can scare some folks away, because you think, oh, I got to know Java in order to write these Javas to pull data out of the cluster.
+
+00:14:42
+Well, that's not entirely true. A lot of things have popped up in the Hadoop ecosystem over the last couple of years that attract many people. And this is where the flexibility comes into play, because you don't need to understand Java to get data out of the cluster.
+
+00:14:56
+In fact, the engineers at Facebook built a subproject called Hive, which is a SQL interpreter. Facebook said, you know what? We want lots of people to be able to write ad hoc jobs against our cluster, but we're not going to force everybody to learn Java. So that's why they had a team of engineers build Hive.
+
+00:15:14
+And now anybody that's familiar a SQL, which most data professionals are, can now pull data out of the cluster. Pig is another one. Yahoo went and built Pig as a high-level dataflow language to pull data out of a cluster. And all Hive and Pig both do are under the hood create MapReduce jobs and submit them to the cluster.
+
+00:15:31
+That's the beauty of an open source framework. People can build and add to it. Our community keeps growing in Hadoop. More the technologies and projects are added to Hadoop ecosystem all the time, which are just making it more attractive to more and more folks.
+
+00:15:45
+Again, as these technologies merge and Hadoop matures, you're going to see it become a lot more attractive to just the big businesses. Small, medium-sized businesses, people of all types of industries are going to jump into Hadoop and start mining all kinds of data in their network.
+
+00:16:00
+All right. So we're fault-tolerant through HDFS. We're flexible in how we can retrieve the data. And we're also flexible in the kind of data we can put in Hadoop. As we saw, structured, unstructured, semi-structured, we can put it all in there. But we're also scalable.
+
+00:16:13
+The beauty of scalability is it just kind of happens by default because we're in the distributed computing environment. We don't have to do anything special to make Hadoop scalable. We just are. Let's say our MapReduce job starts slowing down because we keep adding more data into the cluster.
+
+00:16:25
+What do we do? We add more nodes, which increases the overall processing power of our entire cluster, which is pretty awesome stuff. And adding nodes is really a piece of cake. We just install the Hadoop binaries, point them to the NameNode, and we're good to go.
+
+00:16:39
+Last but not least, Hadoop is extremely intelligent. We've already seen examples of this. The fact that we're bringing computation to the data, we're maximizing the strengths of today's computing world and mitigating the weaknesses, that alone is pretty awesome stuff.
+
+00:16:51
+But on top of that, in a multi-rack environment-- let's get some switches up here. Here's some rack switches, and here's our data center switch-- it's rack-aware. This is something that we need to do manually. We need to configure this. And it's pretty simple to do.
+
+00:17:06
+In a configuration file, we're just describing the network topology to Hadoop so it knows what DataNodes belong to what racks. And what that allows Hadoop to do is even more data locality. So whenever it receives a MapReduce job, it's going to find the shortest path to the data as possible.
+
+00:17:23
+If most of the data is on one rack and only a little bit on another rack, then it can get most of the data from one rack. And, again, this is where it's going to save on bandwidth. It's going to save on bandwidth, because it's going to keep data as local to the rack as possible.
+
+00:17:35
+Pretty awesome stuff. Let's check out a couple of use cases, one from an architectural standpoint, Yahoo. Yahoo has over 40,000 machines, as I mentioned, with Hadoop on it. Their largest cluster sits at a 4,500-node cluster. Each node inside of that cluster has a dual quad-core CPU, 4 one-terabyte disks, and 16 gigabytes of RAM, pretty good size for a commodity machine, but certainly not an extremely high-end machine that we're talking about in the traditional committing sense.
+
+00:18:01
+That's not bad at all. Another use case here is the cloud. The cloud. What about Hadoop in the cloud? Lots and lots of companies running Hadoop implementations in the cloud, Amazon being one of the more popular ones out there, in that instead of Amazon Web Services they have something called EMR, Elastic MapReduce, which is just their own implementation of Hadoop.
+
+00:18:22
+You can literally get it up and running in five minutes in the cloud. And that's going to be attractive for a lot of businesses that can't afford an internal infrastructure, such as Yahoo or GM, as we saw earlier. For instance, here's a good one, New York Times.
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------------------
+Change hostname on centos
+-----------------------------------------
+1. $ sudo vi /etc/sysconfig/network
+2. change hostname
+3. restart network interface, # /etc/init.d/network restart
+
+-----------------------------------------
+add, list and delete service on centos
+-----------------------------------------
+- Add nginx service
+# chkconfig --add nginx
+
+- Delete nginx service
+# chkconfig --del nginx
+
+- List service
+# chkconfig --list
+
+- List nginx service
+# chkconfig --list nginx
+
+----------------------------------------
+Setup ssh
+----------------------------------------
+Set up ssh so that name node can connect to the remote machine without password
+$ ssh-keygen -t rsa -- generate ssh key
+
+copy the key from name node to the 2nd name node and data node
+$ ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@namenode2nd
+$ ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@datanode1
+$ ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@datanode2
+$ ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@datanode3
+
+
+----------------------------------------
+Cluster configuration
+----------------------------------------
+
+- Changes on the name node.
+
+Change the file /hadoop/conf/masters, add the following lines
+*************
+namenode2nd
+*************
+
+Change the file /hadoop/conf/slaves, add the following lines
+*************
+datanode1
+datanode2
+datanode3
+*************
+
+- changes on the data node
+
+Change the core-site.xml on the data node and point it to the namenode
+**********************************************************
+<configuration>
+<property>
+	<name>fs.default.name</name>
+	<value>hdfs://namenode:10001</value>
+</property>
+<property>
+	<name>hadoop.tmp.dir</name>
+	<value>/usr/local/hadoop-1.2.1/tmp</value>
+</property>
+</configuration>
+**********************************************************
+
+
+Change the mapred-site.xml on the data node and point it to the jobtracker
+
+**********************************************************
+<configuration>
+<property>
+	<name>mapred.job.tracker</name>
+	<value>namenode:10002</value>
+</property>
+</configuration>
+**********************************************************
+
+
+
+----------------------------------------
+Hadoop command
+----------------------------------------
+
+1. format name node
+$ hadoop namenode -format
+
+2. start hadoop file system
+$ start-dfs.sh
+
+3. start map reduce engine
+$ start-mapred.sh
+
+4. start file system and map reduce engine
+$ start-all.sh
+
+---------------------------------------
+include or exclude nodes from the cluster
+---------------------------------------
+1. On the name node, create a file called exclude in the hadoop installation fold
+$ touch /hadoop/excludes
+
+2. add the node that you want to excludes
+ex. datanode1
+
+3. configure core-site.xml add the following
+***********************************************
+<property>
+  <name>dfs.hosts.exclude</name>
+  <value>/usr/local/hadoop-1.2.1/excludes</value>
+</property>
+***********************************************
+
+NOTE: we can also do include of nodes like, if we want only specific nodes to be included in the cluster
+***********************************************
+<property>
+  <name>dfs.hosts.include</name>
+  <value>/usr/local/hadoop-1.2.1/includes</value>
+</property>
+***********************************************
+
+4. after decommissioning, we can restart the data node or refresh nodes
+$ hadoop dfsadmin -refreshNodes
+
+
+----------------------------------------------
+After decommissioning, we need to reblance our nodes
+----------------------------------------------
+$ start-balancer.sh
+
+----------------------------------------------
+Shutdown hadoop
+----------------------------------------------
+1. shutdown name node and data node
+$ stop-dfs.sh
+
+2. shutdown job tracker and task tracker
+$ stop-mapred.sh
+
+
+----------------------------------------------
+Check the dfs status on the web ui
+----------------------------------------------
+http://namenode:50070/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
