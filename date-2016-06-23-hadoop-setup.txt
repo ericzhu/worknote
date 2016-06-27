@@ -420,59 +420,210 @@ It's System Restore for the NameNode. More on the internals of those node types 
 
 Now let's turn our attention to the right-hand side, where we have a large multi-rack cluster set up. And you can see we also broke out our roles into their own separate servers, even their own separate servers in their own rack. And that's just to show you that for learning purposes you can put these all on one node.
 
-00:06:36
-You can break them out into separate nodes. Or in the real world, you can even break them out into separate nodes in their own racks. With the multi-cluster implementation, we have a few more challenges that present themselves. The first one is going to be data loss prevention.
+You can break them out into separate nodes. Or in the real world, you can even break them out into separate nodes in their own racks. 
+With the multi-cluster implementation, we have a few more challenges that present themselves. The first one is going to be data loss prevention.
 
-00:06:52
-If you remember in the first Nugget, we talked about how HDFS is reliable because it uses replication. It uses a software solution via replication to ensure that we have multiple copies of data across the cluster, rather than a hardware solution, such as rate.
+If you remember in the first Nugget, we talked about how HDFS is reliable because it uses replication. 
+It uses a software solution via replication to ensure that we have multiple copies of data across the cluster, rather than a hardware solution, such as rate.
 
-00:07:07
-And it does this by ensuring that there are multiple copies of the data, the blocks across our cluster. And if we were to lose a single node, it's not a big deal. The NameNode has a map where all these blocks are across all the data nodes in the cluster. So if we lose a node, the NameNode's going to recognize that and say, hey, I know what blocks are on that note, and I'll just re-replicate those blocks across the cluster.
+And it does this by ensuring that there are multiple copies of the data, the blocks across our cluster. 
+And if we were to lose a single node, it's not a big deal. The NameNode has a map where all these blocks are across all the data nodes in the cluster. 
+So if we lose a node, the NameNode's going to recognize that and say, hey, I know what blocks are on that note, and I'll just re-replicate those blocks across the cluster.
 
-00:07:30
-Now what happens if we lose an entire rack? Ruh-roh, Shaggy. Exactly, data loss. This is where rack awareness can help us out with the first challenge. And it does this by understanding our network topology. Now this is kind of a manual thing. It is a manual thing, not kind of, totally is a manual thing.
+Now what happens if we lose an entire rack? Ruh-roh, Shaggy. Exactly, data loss. 
+This is where rack awareness can help us out with the first challenge. And it does this by understanding our network topology. 
+Now this is kind of a manual thing. It is a manual thing, not kind of, totally is a manual thing.
 
-00:07:51
-We need to describe our network topology to the NameNode. But once it understands it and it is rack aware, any time data comes in to our cluster, the NameNode is going to ensure that multiple copies of the data sit on multiple racks. So now if we lose a whole rack due to a power loss or something, not a problem.
+We need to describe our network topology to the NameNode. 
+But once it understands it and it is rack aware, any time data comes in to our cluster, the NameNode is going to ensure that multiple copies of the data sit on multiple racks. 
+So now if we lose a whole rack due to a power loss or something, not a problem.
 
-00:08:11
-The NameNode knows what data was on that rack, and it can re-replicate it across the remaining racks in our cluster. The second challenge we have a multi-rack cluster is network performance. Bandwidth, it's a scarce resource. Now we're going to make an assumption here that inter-rack communication is much higher bandwidth, lower latency than cross-rack communication.
+The NameNode knows what data was on that rack, and it can re-replicate it across the remaining racks in our cluster. 
+The second challenge we have a multi-rack cluster is network performance. Bandwidth, it's a scarce resource. 
 
-00:08:36
-So with that assumption, wouldn't it be great if rack awareness could keep our bulky flows inside of the rack? It can. It can, because, again, it knows where all the blocks are. It knows what racks they sit on. So whenever possible, if it can get all the data off of a single rack, it will do it.
+Now we're going to make an assumption here that inter-rack communication is much higher bandwidth, lower latency than cross-rack communication.
+So with that assumption, wouldn't it be great if rack awareness could keep our bulky flows inside of the rack? 
+It can. It can, because, again, it knows where all the blocks are. It knows what racks they sit on. 
+So whenever possible, if it can get all the data off of a single rack, it will do it.
 
-00:08:54
-And that'll take the heat off of our core switches and ensure optimal network utilization. So rack awareness is pretty awesome stuff, and I'll show you how to configure it when we get into configuring and managing HDFS in a future Nugget. Those are going to be some of the defining features of HDFS, rack awareness along with reliable storage and high throughput at all levels, at the single-rack small cluster level or the multi-rack large cluster level.
+And that'll take the heat off of our core switches and ensure optimal network utilization. 
+So rack awareness is pretty awesome stuff, and I'll show you how to configure it when we get into configuring and managing HDFS in a future Nugget. 
+Those are going to be some of the defining features of HDFS, 
+ - rack awareness along with 
+ - reliable storage and 
+ - high throughput at all levels, 
 
-00:09:19
-Let's head over to our next slide, where we'll get familiar with the internals of HDFS and more familiar with the roles and responsibilities of each node type. Let's start by digging into each node a little bit further. The first one we're going to look at here is the NameNode.
+at the single-rack small cluster level or the multi-rack large cluster level.
 
-00:09:32
-And the NameNode is the single most important node in our cluster. Why? Because it's a single point of failure. The NameNode, everything goes through to communicate. It's our controller. It contains the file system metadata and holds in memory a map of our entire cluster.
+Let's head over to our next slide, where we'll get familiar with the internals of HDFS and more familiar with the roles and responsibilities of each node type. 
+Let's start by digging into each node a little bit further. The first one we're going to look at here is the NameNode.
 
-00:09:49
-So if the NameNode goes down, the cluster is down. And while there are no high-availability solutions out of the box for the NameNode, there are things that we can implement that will ensure that if a disaster does occur we can get it back up and running in a relatively short amount of time, things like Secondary NameNodes, which we'll talk about shortly.
+And the NameNode is the single most important node in our cluster. Why? Because it's a single point of failure. 
+The NameNode, everything goes through to communicate. It's our controller. 
+It contains the file system metadata and holds in memory a map of our entire cluster.
 
-00:10:06
-But also, you'll want your NameNode to be the beefiest node in your cluster, lots of power and lots of RAM and rate-enabled. Now back to this file system metadata stuff. The NameNode holds in memory a snapshot of the entire file system. It looks something like this, where it tracks all the files, tracks the replication value, which, by the way, is a default of 3, but you can override the replication factor when you put a file into HDFS.
+So if the NameNode goes down, the cluster is down. 
+And while there are no high-availability solutions out of the box for the NameNode, 
+there are things that we can implement that will ensure that if a disaster does occur we can get it back up and running in a relatively short amount of time, 
+things like Secondary NameNodes, which we'll talk about shortly.
 
-00:10:31
-And that's going to determine how many blocks of each file are out there. Then it also holds a mapping of block IDs to DataNodes. So it'll look something like this. And the NameNode stores all of that in memory. The NameNode also has something called the edit log or a journal that keeps track of all the transactions.
+But also, you'll want your NameNode to be the beefiest node in your cluster, lots of power and lots of RAM and rate-enabled. 
 
-00:10:51
-Now it doesn't actually put data into here. That would be a bottleneck if it had to write and manage edit logs. But any client that requests information or changes information or puts something in HDFS, the client is the one that actually writes that information into the edit logs.
+Now back to this file system metadata stuff. 
+The NameNode holds in memory a snapshot of the entire file system. 
+It looks something like this, where it tracks all the files, tracks the replication value, which, by the way, is a default of 3, 
+but you can override the replication factor when you put a file into HDFS.
 
-00:11:06
-Here's how this works. Let's get really down into the details here. Again, the NameNode stores a snapshot of the file system in memory. So what does it do with all the changes? Again, it stores them inside of the edit log. All file system modifications go into the edit log.
+And that's going to determine how many blocks of each file are out there. Then it also holds a mapping of block IDs to DataNodes. 
+So it'll look something like this. And the NameNode stores all of that in memory. 
+The NameNode also has something called the edit log or a journal that keeps track of all the transactions.
 
-00:11:21
-How does it take information from the edit logs and get it in memory? Well, that's going to take a reboot of the NameNode or a checkpoint process. So what happens then is during a checkpoint or a reboot, which forces a checkpoint, the NameNode is going to take what's in the memory, persist it to this.
+Now it doesn't actually put data into here. That would be a bottleneck if it had to write and manage edit logs. 
+But any client that requests information or changes information or puts something in HDFS, the client is the one that actually writes that information into the edit logs.
 
-00:11:37
-And then it's going to merge the edit logs with that file that's persisted to disk. That file, by the way, is called FS image, file system image. Then when the NameNode reboots, it's going to reload what's in FS image into memory, and we'll have clear edit logs.
+Here's how this works. Let's get really down into the details here. 
+Again, the NameNode stores a snapshot of the file system in memory. 
+So what does it do with all the changes? Again, it stores them inside of the edit log. 
 
-00:11:52
-That's great. That's how that process works. What if we don't reboot the NameNode very often? Which in a production environment, you wouldn't. What that means is these edit logs are just going to keep growing and growing and growing. And if we were to lose the NameNode to a catastrophic event, we've just lost all the changes to our system.
+All file system modifications go into the edit log. How does it take information from the edit logs and get it in memory? 
+Well, that's going to take a reboot of the NameNode or a checkpoint process. 
+
+So what happens then is during a checkpoint or a reboot, which forces a checkpoint? the NameNode is going to take what's in the memory, persist it to this.
+And then it's going to merge the edit logs with that file that's persisted to disk. That file, by the way, is called FS image, file system image. 
+Then when the NameNode reboots, it's going to reload what's in FS image into memory, and we'll have clear edit logs.
+
+That's great. That's how that process works. What if we don't reboot the NameNode very often? Which in a production environment, you wouldn't.
+What that means is these edit logs are just going to keep growing and growing and growing. 
+And if we were to lose the NameNode to a catastrophic event, we've just lost all the changes to our system.
+
+This is why it's nice to have a Secondary NameNode. 
+A Secondary NameNode takes over all the responsibilities of merging the log with the file system image. It essentially is our housekeeping node for the NameNode. 
+It's going to periodically-- every hour, by default, totally configurable by us, by the way-- head over to the NameNode and say, hey, give me your edit logs.
+
+
+And the Secondary NameNodes are going to have the most recent FS image on it. 
+It's going to then merge the two together and then re-upload that FS image back up to the NameNode. 
+So the next time the NameNode restarts, it's going to have the latest and greatest file system metadata.
+
+Also, if, again, a catastrophic event occurs, we have a backup of the file system namespace over on our secondary NameNode. So we can reconstruct the NameNode with this information, if need be. 
+Before we move on to the internals of the DataNode, let's just reiterate the NameNode, 
+ - the most important node in the cluster, 
+ - contains a snapshot of the entire file system, 
+   - where all the files are, 
+   - where the blocks that are associated with those files, and 
+   - what data nodes they sit on, and 
+   - how many of those blocks there should be based on the replication factor.
+ - The clients communicate with the NameNode, and 
+ - the NameNode instructs those clients where they can find stuff on the DataNodes. 
+ - They also monitor health, something we'll get to with DataNodes. 
+ - The secondary NameNode is just simply our housekeeping node. It's our backup of the NameNode metadata.
+ - if something disasters occurs, it's what we can use to rebuild the NameNode, since it'll have the latest and greatest snapshot of that file system metadata. 
+ - it's not a high-availability server.
+
+
+Again, DataNodes are the workhorses of the system. They're the ones that are going to be writing blocks to disks and retrieving blocks from disks. 
+They're the ones that are going to communicate directly with clients. And they're also the ones that are going to communicate with the NameNode.
+
+The NameNode doesn't actually communicate with anything. It never talks to DataNodes. It never talks to Secondary NameNodes. 
+DataNodes and Secondary NameNodes talk to the NameNode. In fact, DataNodes send heartbeats every three seconds to the NameNode. 
+This is how the NameNode knows that they're online and can monitor the health of them.
+
+Because if a DataNode doesn't send a heartbeat by 10 minutes, the NameNode is going to consider it a dead node. 
+And that's when it's going to take all the blocks that were on and re-replicate them across the cluster. 
+Speaking of blocks, HDFS, by default, stores our data in 64 megabyte chunks on disk, a far cry from the 4k to 8k that standard file systems used to store their data on disk.
+
+And now you can start to see how and why Hadoop works well with big data. In fact, this number here is going to directly affect our metadata. 
+Because think about it. If we have a small number of large files, our metadata footprint is going to be small. 
+But on the flip side, if we have an extremely large number of files that are tiny and we're storing them in 64 megabyte chunks, that is going to be a lot of metadata.
+
+It's going to get extremely bloated. You can still work with small files, millions of them, but certainly not billions. 
+That's where you'll really start to bring Hadoop to its knees. So it works best with a small number of large files. 
+And if that is your environment, then you can even crank this number up to 128 megabytes to keep your footprint and metadata even smaller for better performance.
+
+But you can start to see how this block stuff works. Because if you look at the metadata here, here's file 1, which replicates three times, meaning we're going to have three of every one of these blocks spread out across whatever DataNodes they sit on. So here's block ID 1, and it should be out there three times.
+
+There it is. Let's say data file number 2 here, which has a replication value of 2, let's look at block ID number 6. That should be out there twice across two nodes. And then here, data file number 3, which only has a replication factor of 1, block number 9 makes up part of that file.
+
+00:16:08
+It'll only be out there once. So that's how you can relate the system metadata, the blocks per file spread out across the nodes inside of the file system. We talked a little bit about block placement indirectly when we were talking about rack awareness. We know that the NameNode is smart enough to ensure that we're reliable across racks in a multi-cluster environment, because it replicates that file and the blocks in that file across racks.
+
+00:16:31
+So if we ever lose a rack, we're cool. But it's even smarter than that. Because inter-rack communication, it'll calculate the distance, network bandwidth-wise, between our DataNodes. And it'll place these blocks as close to one another as possible per file within a rack.
+
+00:16:48
+So talk about network utilization as good as it gets, right? That's what enables real true high performance and high throughput is that we always have the shortest distance possible to a file, again without sacrificing reliability. Just a couple of interesting notes I want to point out here.
+
+00:17:05
+Number one, rebalancing. Let's say time goes on, your disks are starting to fill up, and now you need to add more nodes into the cluster. You add more nodes into the cluster, but now how do you rebalance the data that's almost full across the rest your cluster with all the new nodes you added in? Well, thankfully, we've got this balancer tool.
+
+00:17:22
+It's really easy to set up, configure, and use. And once you run it, it may take some time depending on the size of your cluster, it'll rebalance and evenly distribute the data across the cluster. Replication Management. This is kind of neat how this works.
+
+00:17:34
+Every 10th heartbeat from a DataNode to the NameNode is actually a block report. With that block report, the NameNode can figure out if we're under-replicated or over-replicated. If we're over-replicated, it's just going to mark a block to remove. If it's under-replicated, it's going to create this priority queue.
+
+00:17:53
+And things with the least amount of blocks in the cluster are going to be higher on that list than things-- So if you have a file that has one block out there, it's obvious it's going to be high on the priority list. But if you have a file that's already got two blocks out of three, then it's going to be lower on the list.
+
+00:18:08
+But that's just kind of neat how that works. And also, honorable mention here, every DataNode has a block scanner on it so it can check out the integrity of all the blocks. And that directly impacts the block reports. If you have a corrupted block for whatever reason, then in the block report the NameNode will recognize that, and it'll remove it and then re-replicate the good block to that node.
+
+00:18:32
+There you go. There's the internals of HDFS. It's all about understanding what the NameNode, the Secondary NameNode, and the DataNodes responsibilities are, how they communicate with each other, and how clients communicate with the NameNode to work with the DataNodes.
+
+00:18:43
+And then blocks are really just the storage mechanism underneath the hood of HDFS. On the last slide here, I just wanted to get you familiar with some of the tools we're going to use to interface and interact with HDFS. And once we get to our second Nugget on HDFS after installation, we're just going to jump right in and use these tools.
+
+00:19:00
+So I wanted to get you familiar with what they are and some of the things we can do in HDFS. From a user perspective working with the file system, we're going to use FS Shell. FS Shell is like a standard Linux and Unix command shell, like Bash, for instance, that allows us to interact with the HDFS data and the HDFS file system structure itself.
+
+00:19:23
+Inside of here, you're going to see a lot of commands that looks familiar, if you're familiar with standard Linux command shells, such as LS, LSR, list the contents of a path, list it out recursively. Let's see, some other ones in here. Put or remove and remove recursively, put, copy from local, and move from local, always to move files from our local file system up into the HDFS file system.
+
+00:19:46
+Some other ones in here, CAT. If you want to list the contents of a file to the standard out, we can just have it print it right out into the command-line interface here. Copy to local, move to local, get, those are all how we can take information from HDFS and move them into our local file system.
+
+00:20:03
+And then you've got your standard make directories, change permissions here, change ownership, change group, so all pretty standard stuff. It's just that we've got some extra stuff to work with HDFS. We've also got a couple of nice administrative tools. DFS check is a good one.
+
+00:20:17
+It's a good one for printing out your network topology and figuring out location of DataNodes so we can get block reports for specific nodes. It's kind of neat. We also have a nice DFS Admin tool for that low-level cluster administration stuff. You can get a nice report, which will print out statistics about the cluster, some good general information.
+
+00:20:34
+Safe mode for administration stuff. Refresh nodes is a good one. You'll use refresh nodes when you want to decommission nodes. There's an exclude file where we'll list out the host names of the DataNodes that we want to decommission. And then if we want refreshed nodes, it'll decommission them, take them out of the cluster.
+
+00:20:50
+And the same thing to add new nodes in the cluster. We've got a file where we can put and list out and register the nodes with the cluster so we can run that refresh nodes to get them in immediately. Some other good mentions in here. You've got quotas for setting and clearing quotas.
+
+00:21:03
+And then set balancer bandwidth, so that way when we run the balancer we can put a threshold on it so it doesn't suck down all the bandwidth in our network. We've also got some web UIs, which are really, really nice. In fact, the NameNode has a web UI on it that allows us to browse the file system.
+
+00:21:18
+So it's kind of cool that we can get a visual. We can see the structure. We can even open files to see their contents there right in the browser. It's also a nice centralized place for logs, so you don't have to go hunting down in the file system to look for logs.
+
+00:21:29
+They're all right there in the web interface. And the NameNode has a web interface, JobTracker has a web interface, and we've got a few more out there that I'll show you when we get Hadoop up and running. The last thing I want to point out here is if you need help on any of this stuff, head out to Google, and just google Hadoop Command Guide.
+
+00:21:46
+Here is a nice centralized reference point for all things Hadoop commands. For instance here, here's the FS Shell. And you can get there as well by going to FS and then clicking on Hadoop FS Shell Guide. Here's everything we were looking at. So here it is.
+
+00:22:00
+Sometimes it'll give you an example and usage. Other times, it'll just give you some information and the syntax on how to use it. But pretty useful. Let me go back here and show you-- Here you go. Look at this. Check this out. Here's the balancer. Here's DFS Admin.
+
+00:22:16
+And then you have specific daemons that you can run. In fact, when we set up the NameNode, we're going to need to format it. So we're going to run NameNode/format, and that'll format it and get it ready for us to work with and start putting files in. So you've got specific commands that relate to the daemons that you can run and manage.
+
+00:22:33
+Here's the balancer right here. Check it out. We can run the cluster balancing utility, pass in a threshold, and that's it. It's done. it'll run and rebalance our cluster. So a lot of good stuff. But again, just google Hadoop Command Guide, and you can get a list of all the commands and many of the things that we can do inside of HDFS.
+
+00:22:50
+In this CBT Nugget, we learned all about the Hadoop Distributed File System. We started off with the architecture, got familiar with the master/slave architecture, saw what the NameNode, the DataNode, the Secondary NameNode, and how a small single-rack implementation differs from a full multi-rack implementation.
+
+00:23:08
+We even talked about rack awareness, one of the coolest features here in Hadoop. Then we jumped into the internals of HDFS. We got more information on what the NameNode, Secondary NameNode, and DataNode are all about, how they work internally and how they work together along with clients to store and serve up data out of HDFS.
+
+00:23:26
+We even got familiar with blocks. We went down into the block level, saw how HDFS distributes blocks and then manages blocks across its file system. At the end here, we got familiar with some of the tools we're going to be using to interact with HDFS, FS Shell, DFS Admin being the two big ones, and also the web user interfaces.
  
  
  
