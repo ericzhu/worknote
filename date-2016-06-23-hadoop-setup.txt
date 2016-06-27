@@ -41,80 +41,449 @@ As I mentioned earlier, Hadoop is this distributed software solution.
 It is a scalable, fault-tolerant, distributive system for data storage and processing. 
 There's two main components in Hadoop, HDFS, which is the storage, and MapReduce, which is the retrieval and the processing. 
 
-HDFS is this self-healing high-bandwidth clustered storage. And it's pretty awesome stuff. What would happen here is if we were to put a petabyte file inside of our Hadoop cluster, HDFS would break it up into blocks and then distribute it across all the nodes in our cluster. On top of that-- and this is where the fault tolerance side is going to come in a play-- when we configure HDFS, we're going to set up a replication factor.
+HDFS is this self-healing high-bandwidth clustered storage. 
+What would happen here is if we were to put a petabyte file inside of our Hadoop cluster, 
+HDFS would break it up into blocks and then distribute it across all the nodes in our cluster. 
+When we configure HDFS, we're going to set up a replication factor. By default, it's set at 3. 
 
-00:12:47
-By default, it's set at 3. What that means is when we put this file in Hadoop, it's going to make sure that there are three copies of every block that make up that file spread across all the nodes in the cluster. That's pretty awesome. And why that's awesome is because if we lose a node, it's going to self-heal.
+What that means is when we put this file in Hadoop, it's going to make sure that there are three copies of every block that make up that file spread across all the nodes in the cluster. 
+If we lose a node, it's going to self-heal. It's going to say, oh, I know what data was on that node. I'm just going to re-replicate the blocks that were on that node to the rest of the servers inside of the cluster. 
+And how it does it is this. It has a NameNode and a DataNode. Generally, you have one NameNode per cluster, and then all the rest of these here going to be DataNodes.
 
-00:13:04
-It's going to say, oh, I know what data was on that node. I'm just going to re-replicate the blocks that were on that node to the rest of the servers inside of the cluster. And how it does it is this. It has a NameNode and a DataNode. Generally, you have one NameNode per cluster, and then all the rest of these here going to be DataNodes.
+Essentially, the NameNode is just a metadata server. It just holds in memory the location of every block and every node. 
+And even if you have multiple racks set up, it'll know where blocks exist on what note on what rack spread across the cluster inside your network.
 
-00:13:21
-And we'll get into more details of the roles and secondary NameNode nodes and all that stuff when we get there. But essentially, the NameNode is just a metadata server. It just holds in memory the location of every block and every node. And even if you have multiple racks set up, it'll know where blocks exist on what note on what rack spread across the cluster inside your network.
+Now how we get data is through MapReduce. And as the name implies, it's really a two-step process.
+There's a mapper and a reducer. Programmers will write the mapper function, which will go out and tell the cluster what data points we want to retrieve. 
+The reducer will then take all that data and aggregate it. So again, Hadoop is a batch-processing-based system.
+MapReduce is all about working on all of the data inside of our cluster. 
+And MapReduce produce can scare some folks away, because you think, oh, I got to know Java in order to write these Javas to pull data out of the cluster.
 
-00:13:40
-So that's the secret sauce behind HDFS, and that's how we're fault-tolerant and redundant, and it's just really awesome stuff. Now how we get data is through MapReduce. And as the name implies, it's really a two-step process. There's a little more to that.
+The engineers at Facebook built a subproject called Hive, which is a SQL interpreter. 
+Facebook said, we want lots of people to be able to write ad hoc jobs against our cluster, but we're not going to force everybody to learn Java.
+And now anybody that's familiar a SQL can now pull data out of the cluster. 
 
-00:13:53
-But again, we're going to keep this high level. So we'll get into MapReduce. We've got a few Nuggets on MapReduce. We'll get in down to the nitty-gritty details, and we'll also break out Java and write some MapReduce jobs on our own. But it's a two-step process at the surface.
+Pig is another one. Yahoo went and built Pig as a high-level dataflow language to pull data out of a cluster. 
+And all Hive and Pig both do are under the hood create MapReduce jobs and submit them to the cluster.
 
-00:14:06
-There's a mapper and a reducer. Programmers will write the mapper function, which will go out and tell the cluster what data points we want to retrieve. The reducer will then take all that data and aggregate it. So again, Hadoop is a batch-processing-based system.
+So we're fault-tolerant through HDFS. We're flexible in how we can retrieve the data. And we're also flexible in the kind of data we can put in Hadoop. 
+As we saw, structured, unstructured, semi-structured, we can put it all in there. But we're also scalable.
 
-00:14:23
-And we're working on all of the data in the cluster. We're not doing any seeking or anything like that. Seeks are what slows down data retrieval. MapReduce is all about working on all of the data inside of our cluster. And MapReduce produce can scare some folks away, because you think, oh, I got to know Java in order to write these Javas to pull data out of the cluster.
+The beauty of scalability is it just kind of happens by default because we're in the distributed computing environment. 
+We don't have to do anything special to make Hadoop scalable. 
 
-00:14:42
-Well, that's not entirely true. A lot of things have popped up in the Hadoop ecosystem over the last couple of years that attract many people. And this is where the flexibility comes into play, because you don't need to understand Java to get data out of the cluster.
+Let's say our MapReduce job starts slowing down because we keep adding more data into the cluster.
+What do we do? We add more nodes, which increases the overall processing power of our entire cluster, which is pretty awesome stuff. 
+And adding nodes is really a piece of cake. We just install the Hadoop binaries, point them to the NameNode, and we're good to go.
 
-00:14:56
-In fact, the engineers at Facebook built a subproject called Hive, which is a SQL interpreter. Facebook said, you know what? We want lots of people to be able to write ad hoc jobs against our cluster, but we're not going to force everybody to learn Java. So that's why they had a team of engineers build Hive.
+Last but not least, Hadoop is extremely intelligent. The fact that we're bringing computation to the data, 
+we're maximizing the strengths of today's computing world and mitigating the weaknesses.
 
-00:15:14
-And now anybody that's familiar a SQL, which most data professionals are, can now pull data out of the cluster. Pig is another one. Yahoo went and built Pig as a high-level dataflow language to pull data out of a cluster. And all Hive and Pig both do are under the hood create MapReduce jobs and submit them to the cluster.
+But on top of that, in a multi-rack environment-- let's get some switches up here. 
+Here's some rack switches, and here's our data center switch-- it's rack-aware. 
+This is something that we need to do manually. We need to configure this. And it's pretty simple to do.
 
-00:15:31
-That's the beauty of an open source framework. People can build and add to it. Our community keeps growing in Hadoop. More the technologies and projects are added to Hadoop ecosystem all the time, which are just making it more attractive to more and more folks.
+In a configuration file, we're just describing the network topology to Hadoop so it knows what DataNodes belong to what racks. 
+And what that allows Hadoop to do is even more data locality. So whenever it receives a MapReduce job, it's going to find the shortest path to the data as possible.
 
-00:15:45
-Again, as these technologies merge and Hadoop matures, you're going to see it become a lot more attractive to just the big businesses. Small, medium-sized businesses, people of all types of industries are going to jump into Hadoop and start mining all kinds of data in their network.
+If most of the data is on one rack and only a little bit on another rack, then it can get most of the data from one rack. 
+And, again, this is where it's going to save on bandwidth. It's going to save on bandwidth, because it's going to keep data as local to the rack as possible.
 
-00:16:00
-All right. So we're fault-tolerant through HDFS. We're flexible in how we can retrieve the data. And we're also flexible in the kind of data we can put in Hadoop. As we saw, structured, unstructured, semi-structured, we can put it all in there. But we're also scalable.
+Let's check out a couple of use cases, one from an architectural standpoint, Yahoo. Yahoo has over 40,000 machines, as I mentioned, with Hadoop on it. 
+Their largest cluster sits at a 4,500-node cluster. Each node inside of that cluster has a dual quad-core CPU, 4 one-terabyte disks, and 16 gigabytes of RAM, 
+pretty good size for a commodity machine, but certainly not an extremely high-end machine that we're talking about in the traditional committing sense.
 
-00:16:13
-The beauty of scalability is it just kind of happens by default because we're in the distributed computing environment. We don't have to do anything special to make Hadoop scalable. We just are. Let's say our MapReduce job starts slowing down because we keep adding more data into the cluster.
+That's not bad at all. Another use case here is the cloud. The cloud. What about Hadoop in the cloud? 
+Lots and lots of companies running Hadoop implementations in the cloud, Amazon being one of the more popular ones out there, 
+in that instead of Amazon Web Services they have something called EMR, Elastic MapReduce, which is just their own implementation of Hadoop.
 
-00:16:25
-What do we do? We add more nodes, which increases the overall processing power of our entire cluster, which is pretty awesome stuff. And adding nodes is really a piece of cake. We just install the Hadoop binaries, point them to the NameNode, and we're good to go.
+You can literally get it up and running in five minutes in the cloud. 
+And that's going to be attractive for a lot of businesses that can't afford an internal infrastructure. 
 
-00:16:39
-Last but not least, Hadoop is extremely intelligent. We've already seen examples of this. The fact that we're bringing computation to the data, we're maximizing the strengths of today's computing world and mitigating the weaknesses, that alone is pretty awesome stuff.
+The New York Times wanted to convert all of their articles to PDFs, four terabytes of articles into PDFs. 
+They fired up an AWS EC2 instance. They used S3. They put their four terabytes of TIFF data inside of S3. 
 
-00:16:51
-But on top of that, in a multi-rack environment-- let's get some switches up here. Here's some rack switches, and here's our data center switch-- it's rack-aware. This is something that we need to do manually. We need to configure this. And it's pretty simple to do.
-
-00:17:06
-In a configuration file, we're just describing the network topology to Hadoop so it knows what DataNodes belong to what racks. And what that allows Hadoop to do is even more data locality. So whenever it receives a MapReduce job, it's going to find the shortest path to the data as possible.
-
-00:17:23
-If most of the data is on one rack and only a little bit on another rack, then it can get most of the data from one rack. And, again, this is where it's going to save on bandwidth. It's going to save on bandwidth, because it's going to keep data as local to the rack as possible.
-
-00:17:35
-Pretty awesome stuff. Let's check out a couple of use cases, one from an architectural standpoint, Yahoo. Yahoo has over 40,000 machines, as I mentioned, with Hadoop on it. Their largest cluster sits at a 4,500-node cluster. Each node inside of that cluster has a dual quad-core CPU, 4 one-terabyte disks, and 16 gigabytes of RAM, pretty good size for a commodity machine, but certainly not an extremely high-end machine that we're talking about in the traditional committing sense.
-
-00:18:01
-That's not bad at all. Another use case here is the cloud. The cloud. What about Hadoop in the cloud? Lots and lots of companies running Hadoop implementations in the cloud, Amazon being one of the more popular ones out there, in that instead of Amazon Web Services they have something called EMR, Elastic MapReduce, which is just their own implementation of Hadoop.
-
-00:18:22
-You can literally get it up and running in five minutes in the cloud. And that's going to be attractive for a lot of businesses that can't afford an internal infrastructure, such as Yahoo or GM, as we saw earlier. For instance, here's a good one, New York Times.
+They spun up an EC2 instance and then just ran a MapReduce job to take those four terabytes, convert them into PDFs. 
+It happened in less than 24 hours, and it cost them a grand total of $240. 
+Because you only pay for compute time. So while you're developing and learning this stuff, if you ever want to run it, spin it up, run it, spin it down. It'll cost you cents.
 
 
 
 
+----------------------------------------
+Hadoop technology stack
+----------------------------------------
+
+
+And visuals are always good anyway. Good for learning good for getting people on the same page. 
+Here it is. The Hadoop Technology Stack. And this is nowhere near a complete list. Really I just added the popular ones, hand-picked a few incubator projects, and then obviously we have the core stuff in here.
+
+The middle is our Hadoop Core, otherwise known as Hadoop Common.
+And this is going to consist of 
+- HDFS, the Hadoop distributed file system.
+- MapReduce, our distributed processing-- our programmable interface to access the data stored in our cluster.
+- YARN, which stands for yet another resource negotiator. What does this acronym stands for? It is MapReduce version 2. 
+  So if you see MR 2 or YARN out there, they both mean the exact same thing. 
+  
+YARN This is future tech. This is stuff that's currently in Alpha Hadoop 2.0. 
+Essentially, it's a rewrite of MapReduce 1-- which is what we're going to be learning about-- in that it changes the architecture a little bit.
+
+In MapReduce 1, you have JobTracker, and you have TaskTrackers. The JobTracker sits on the name node, the TaskTrackers sit on all the data nodes. 
+And the job of (the responsibility of) the JobTracker is to manage resources, scheduling, and it also tracks all the TaskTrackers. So it has a big job. 
+
+And YARN further breaks that down. It breaks the JobTracker down into separate daemons. 
+ - One specifically for managing resources 
+ - and one for managing jobs. Only they're not really call jobs in Hadoop 2.0, they're called applications, which are a container for jobs.
 
 
 
+
+ 
+ 
+------------------------------------
+Hadoop Data access library
+------------------------------------
+
+So the reason we need more ways to access the data inside of Hadoop is 
+because not everyone is a low level Java, or C, or C++ programmer that can write MapReduce jobs and go and get the data. 
+And even if you are, some things in MapReduce are notoriously hard to do. 
+Things like joining, grouping, filtering, all those common things that we do in our SQL languages are quite the challenge to do, 
+even if you are pretty proficient in a programming language, such as Java. So we've got some data access libraries to help us out.
+
+
+Pig is one of them. Pig is really just a high level data flow scripting language. It's really easy to get the hang of, and there's not a lot of key words in it. 
+And you can do quite a bit. But it's all about getting the data, loading it up, transforming the data, filtering the data, and then either returning or storing those results.
+
+There are two core components to Pig. There's Pig Latin, which is the programming language. 
+And then there's the Pig Runtime, which compiles Pig Latin and converts it into a MapReduce job to submit to the cluster underneath the hood. 
+
+Hive is another data access project. Extremely popular, just like Pig. Hive is a way to project structure on to the data inside of our cluster. 
+So really it's a database in a data warehouse built on top of Hadoop. And it contains a query language called HiveQL. Kind of like SQL, it's a Hive query language, HiveQL.
+
+And it is extremely similar to SQL. Not nearly as deep and complex, but all the basic stuff is there. 
+Select, columns, from table, where for filtering, group by, you have everything that is familiar to a SQL professional inside of HiveQL. 
+So it's extremely attractive for many people that implement Hadoop are obviously going to have data professionals at understand SQL.
+
+So Hive is extremely popular because of that. And I should also note that Hive does the same thing that Pig does. 
+It converts these queries into MapReduce jobs that get submitted to the cluster. 
+
+Moving down the technology stack, data storage. Remember, Hadoop, out of the box is a batch processing system.
+
+We put the data in HDFS once, so we read from it many times. Well, what if we needed to do seeks? 
+What if we needed to get specific data out? What if we needed to do rights and do real-time transaction processing on top of Hadoop data? 
+Well, that's what we have here in some of these column-oriented databases known as HBase and Cassandra.
+
+And these are just Apache projects. But there's a buzz term for you, ready for this? NoSQL. 
+NoSQL, not only sequels is what that stands for. That doesn't mean you can't use SQL like languages to get the data out. 
+What it means is the underlying structure of these databases are not strict, like they are in the relational world.
+They're very, loose very flexible. Which makes them very scalable. And that's what we need in the world of big data and Hadoop. 
+
+In fact, there are a lot of NoSQL database platforms out there. One of the most popular ones being MongoDB. 
+MongoDB is extremely popular, especially amongst programmers, because it's really easy to work with.
+It's a document style storage model, which means programmers can take the data models and classes that what we call objects in their applications, 
+and literally serialize them right into MongoDB, and with the same ease bring them back into their application.
+Not to get too far down the NoSQL path here, but that's what HBase and Cassandra are. 
+
+They're NoSQL style databases that sit on top of our Hadoop data. 
+There are some differences between them, and it really starts off from where they came from. 
+HBase was based on Google's big table. Which is a way that we could create a table that contained millions of columns and billions of rows. 
+And we could put indexes on them, and do serious data analysis. And HBase is more for data warehousing data analysis. 
+You could put indexes on them and go to town for some high performance seeks to find the data, what you're looking for.
+
+And the nice thing about HBase is Pig and Hive natively integrate with HBase. 
+So that's kind of neat that you can run Pig and Hive queries right against the data sitting in your HBase tables. 
+
+Cassandra has its roots in Amazon's Dynamo data store. 
+And it's really designed for real time interactive transaction processing on top of our Hadoop cluster.
+
+So both of these solve a different problem, but they both require seeking against our Hadoop data. 
+And this is why it helps to-- when you're looking at Hadoop and say you've got tasked with a Hadoop project, you're going to be the one that goes through all the different technologies.
+
+And while you'll see a lot of overlap, the devil is in the details as they say, you'll need to look deep, run a few smoke tests with each of them to really find out what is best for your situation. 
+But again, that's the beauty of this open source nature. And why we have so many projects, is even though there's going to be some crossover, they were all designed to solve a specific problem in the world of big data.
+
+Heading further into the abyss of Hadoop related technologies, we have just a random collection of projects that span many different categories. 
+Some of these solve a specific business problem, some of them are a little more generic. 
+
+Like HCatalog. It's known as a metadata table and storage management system. 
+What in the heck does that mean? It means it's a way for us to create shared schemas. 
+It's a way for our tools, Pig, Hive, and Sqoop, to interoperate, but also for us to have a consistent view of that data across those tools. 
+
+Lucene is there for full text searching. So it's an API loaded with algorithms to do things like standard full text searching, 
+to wild card searches, phrase searches, range searches, all that kind of stuff. 
+
+Hama is there for BSP, Bulk Synchronous Processing. So if you need to work with large amounts of scientific data, it's there to help make sense of it.
+
+And Crunch is there for writing and testing and running MapReduce pipelines. We'll talk more about MapReduce pipelines when we get there. 
+But essentially, it gives you full control over all four phases, which are going to be map, shuffle, reduce, and combine.
+
+We just talked about map and reduce, but we'll get into those other phases and how the MapReduce pipeline works. 
+Essentially, Crunch is there to help with joining an aggregation of data. Because that is again, very, very hard to do in just low level MapReduce.
+So Crunch is there to make it a little easier to work inside the MapReduce pipeline. So it's a development tool to help us get there. 
+
+Avro and Thrift. 
+These are data serialization technologies. What is serialization? It's a way that we can take data from an application, 
+package it up into a format that we can then either store on disk, or exchange it. Send it across the wire. 
+So another application can unpack it and then deserialize it into a format that they understand. So that's all serialization is. 
+It's either data exchange or storage. A lot of the times you'll serialize data as JSON or XML, or some kind of binary format.
+
+And the difference between these two, Avro is your more generic, we'll call it Hadoop essential framework for data serialization and exchange. 
+Thrift is more specific to creating these flexible schemas that work with Hadoop data. But it's specific because it's meant for cross language compatibility.
+
+So if you built an application that works with Hadoop date in Java, and you want to use those same objects inside of an application that you built in Ruby, or Python, or C++, or JavaScript, or node.js, whatever, you can consume it. So Avro, generic data serialization in exchange framework.
+
+Thrift, language neutral serialization framework. We also have data intelligence. 
+Data intelligence in the form of Drill and Mahout. Drill is actually an incubator project that, currently as the name implies, is designed to do interactive analysis on nested data.
+Drill down into it to get closer and closer to the details. 
+
+Mahout is a machine learning library that conquers the three C's. 
+What are the three C's? The first one's recommendation. Wait a minute. 
+There's no C in that. That's why they call it collective or collaborative filtering.
+So that's the first C, which is really just recommendation engines. 
+The second one's clustering, which is a way to group related texts and documents. 
+And the third one's classification, which is a way to categorize related texts and documents. 
+
+So Amazon uses all this stuff for the recommendation engines.
+
+Music sites use it to recommend songs based on what you listen to. 
+And many other sites use it for not only recommendation stuff, but for predictive analysis in general. 
+
+Over here on the left we have our data integration tools. 
+We have Sqoop. Sqoop's the big one. It's definitely an essential project. 
+It's wildly popular because it really makes it easy to integrate Hadoop with relational systems. 
+
+For instance, say we have the results of our MapReduce. 
+Rather than taking those results and putting them in HDFS, and then needing to write Pig and Hive queries, 
+we can send those results the relational world so our data professionals can do their own analysis and become part of the process.
+
+So Sqoop's popular for pushing data out of Hadoop into the relational world. 
+But it's also popular for pushing data from the relational world into Hadoop. 
+Like archiving. We no longer want to archive, or I should say need to archive data to tape, when we can push it into Hadoop, where our data will live for infinity and beyond.
+
+So that's a great use for it. It's for archiving data in Hadoop from the relational world. So Scoop's the big one. 
+
+Flume and Chuckwa are both real time log processing tools. 
+So they're frameworks that we can set up where we have applications or even operating systems or services like web servers that generate just mountains of log data.
+It's a way that we can in real time push that information right in Hadoop, so we can also do real time analysis on top of it. 
+And given some of these other tools, now we have the capability to detect patterns of malicious behavior against things like our web server.
+
+So real time log analysis has a lot of benefits for handling those types of scenarios. 
+
+Over on the right hand side, we have tools for managing, monitoring, and orchestrating all the things that go on in our cluster. 
+
+Zookeeper is a distributed service coordinator. So it's a way that we can keep all of these services that are running across our cluster synchronized. 
+So it handles all the synchronization and the serialization. It also gives us a centralized management point for these services. 
+
+Oozie is a workflow library that allows us to play connect the dots with a lot of these essential projects.
+Pig, Hive, and Sqoop, for instance. Say that we wanted to run a Pig script and when that was done, kick off a Hive query, and when that was done, start a Sqoop job. 
+That's what Oozie allows us to do. Workflow. 
+
+Finally we have Ambari. Ambari is really cool. Holds a lot of promise. Still in incubator status, but I have a feeling that's going to change. 
+Because it allows us to provision a cluster, which means that we can install services. This really easy wizard you walk through, pick all your services. 
+So we could pick Pig, Hive, HBase, Oozie, Sqoop, and install it -- it'll go and install across all the nodes in our cluster.
+So that's pretty cool stuff. Also we can manage all the services inside of our cluster from one centralized spot. 
+That means starting, stopping, reconfiguring services, anything you could think of. And then we can also monitor a lot of these projects from Ambari.
+
+It has again a nice dashboard, nice web UI that we can use. And it currently supports HDFS, MapReduce, Hive, HBase, HCatalog, Zookeeper, Oozi, Pig, and Sqoop. 
+So many of these essentials and even beyond. That's currently what it sits on top of. That's what we can provision, that's what we can manage, and that's what we can monitor.
+
+Well, we made it through quite the list of Hadoop projects. And while this isn't a complete list, it's close. 
+There's a lot of stuff in here. And the important thing is, we covered all the big stuff. All the things you're going to hear in most Hadoop related discussions.
+
+00:15:56
+I also want to point out some honorable mentions here that I didn't have in the list. 
+And then we'll head over to the incubator site, so you can see how to stay on the bleeding edge of Hadoop projects yourself. 
+So Knox holds some promise in the world of centralized security for our Hadoop cluster.
+
+HDT Hadoop development tools, a set of tools that are going to integrate with eclipse to make developing things like MapReduce jobs a lot easier. 
+
+Spark -- Spark was just announced a week ago, and even just a few days ago accepted as an incubator status project inside of Apache.
+And this is really cool. Spark does hold a lot of promise. It claims to be 100 times faster than core Hadoop. 
+It sits on top of Hadoop and takes all the data on the disks and puts it into memory. 
+So it takes the disc problem that we have right out of the equation.
+
+Stores it all on memory so all your queries, your Hive and your Pig queries, are just hitting in memory data all the time. 
+They also have another one from the same people, same community, called Shark. It does the same thing for Hive that Spark does for Hadoop.
+
+Let me just briefly take you over to the incubator website, so you can see where to look and how to find things. 
+Here we go, incubator.apache.org. A little detail on the main page here about what the Apache incubator is all about. 
+If you scroll down here's a list of all the current incubator projects.
+
+Now you can get a much better view this stuff if you just do a forward slash projects. This'll give us a one screen shot at all the projects currently in incubation, with their descriptions, when they were added in as incubation projects. You'll see a lot of things that look familiar in here.
+
+00:17:26
+HCatalog, Hadoop development tools. There's Drill up there. If we scroll down even further, we'll see Spark, which was literally just added in not long ago. And if you scroll down even further, we can see projects that graduated from incubation. So here we'll find everything from Cassandra to Pig to Hive to Sqoop.
+
+00:17:42
+All the things that we looked at here inside of the core Hadoop stack will be in here in some form or another. And then, even at the very bottom, you can see things that didn't quite make it out of incubation. So there we go. The last thing I wanted to show you was a visual.
+
+00:17:55
+A visual on what a Hadoop implementation might look like. And here's a very basic generic one. But essentially, we have core Hadoop here. HDFS, MapReduce, you get all the binary set up. You have Hadoop up and running. This is also by the way, a great way to learn.
+
+00:18:08
+Set up a road map with all your technologies. And start from the center and work your way out. Kind of like what we're going to do. We're going to do the same thing in this series here. So, there's your core. Then we've got our technologies for working with the data, the easy way.
+
+00:18:23
+Not at the MapReduce level but the easy way, through Pig and Hive. Then we've got just some data integration technology set up here. Sqoop, if we want to say integrate with the relational database. Flume if we want to bring our logs in here into Hadoop. Ambari for managing and provisioning the entire cluster.
+
+00:18:40
+Ambari's just an awesome project. Zookeeper for the coordination. HBase for the column store. And their you go. We should probably add HCatalog in here too, for giving that consistent view across these technologies. But there you go. There's a very, very basic implementation of what it would look like.
+
+00:18:56
+In this CBT Nugget we learned about the Hadoop Technology Stack. We started off with the core of Hadoop. We saw that the core is really HDFS and MapReduce. And in the future, Hadoop 2.0 YARN is going to be a part of that. We talked about projects that spanned a wide array of categories.
+
+00:19:12
+Everything from data access, to data storage, to data intelligence, and even data serialization. And then we talked about incubator projects. Took you over to the incubator site. We saw how to see the current status of incubator projects. And at the end, we just took a brief view here of what an implementation might look like.
+
+
+
+--------------------------------------------
+HDFS - Hadoop Distributed File System
+--------------------------------------------
+
+HDFS, the Hadoop Distributed File System. In this Nugget, we're going to look at the roles, responsibilities, and components that make up HDFS. 
+It's not your typical file system. We're going to interface with it a lot like a typical file system. 
+We're still going to create files. We're still going to create directories. You can even assign permissions to these things. 
+But the real difference lies underneath the hood. Because we're not talking about a single machine that this file system sits on. We're talking about a cluster of machines.
+
+We'll start this Nugget off with a high-level overview of HDFS's architecture. 
+We'll define all the different server roles and components. 
+What's the NameNode? What's the DataNode? What's the Secondary NameNode? What's this master/slave architecture all about? 
+Then we'll also look at what a small single-rack implementation looks like and where these components fit.
+
+And we'll even look at a large multi-rack cluster implementation to see where the components fit and to also talk about some of those big features, such as rack awareness. 
+Once we get familiar with HDFS at a high level, we'll dig down into the guts. We'll talk about how HDFS stores its data across all of these machines.
+
+And then we'll really dig into each component. 
+What's the NameNode? What does it really do underneath the hood? What's the DataNode? How does it communicate with the NameNode? 
+And then what is the Secondary NameNode? As the name implies, it's not a high-availability server.
+
+So we'll take the covers off all of these roles and see how they work together to store and retrieve data and also give us a fault-tolerant distributed file system. 
+At the end of this Nugget, I want to get you familiar with the tools we're going to use to interface with HDFS.
+
+We're not going to actually use them in this Nugget, but I want to get you familiar with them ahead of time. 
+Because once we get some installations going, we're going to have another HDFS Nugget where we just jump in and do all of this stuff. 
+So I'll get you familiar now with FS Shell, which is a user tool that we're going to use to do all your basic stuff, create files, directories, permissions, 
+and then also move files from your local file system up to HDFS and vice versa.
+
+I'll also get you familiar with the administrative tools, DFS Admin, see some of the things we can do with it. 
+And then there will be some honorable mentions in there as well of tools that'll make our lives easier and also the web UIs, talk a little bit about the web UIs.
+All of our nodes have web UIs on them that we can use to view status and information about themselves and other things inside of our cluster. Let's get to it. 
+
+We'll start with a high-level view of HDFS's architecture. Here we are, the architecture of HDFS.
+
+Over here on the left-hand side, we have a very simple single-rack cluster. Over here on the right-hand side, we have a multi-rack large cluster. 
+So let's start over here on the left-hand side. 
+
+The first thing to note about HDFS's architecture is it's a master/slave architecture.
+We have the server roles, NameNode, Secondary NameNode, JobTracker, DataNodes, and TaskTrackers. 
+The NameNode is an HDFS daemon, HDFS server role. Think of it as the controller for all of the DataNodes. 
+So NameNode controls all the DataNodes. 
+
+In the MapReduce world-- and I just added these here for completeness. These aren't HDFS-specific-- we have a JobTracker, which is the controller for all of the TaskTrackers. 
+So over in our small implementation here, we have a single machine that contains all of these roles, which is fine. 
+You can do that. But obviously, you wouldn't want to do that in a production environment. You would want to do this only for training purposes and learning. 
+
+And this is what we're going to do. When we install a single-node cluster, we are going to put everything on one machine. 
+It's going to be the NameNode. It's going to be secondary NameNode. It's going to be the JobTracker or the DataNode and the TaskTracker daemons all running on the single machine. 
+And then, once we get into multi-node implementations, we'll break them out, as we should. In a production environment, they should all be on their own dedicated machine.
+
+Let's talk about each one of these roles in a little more detail, minus the JobTracker and the TaskTrackers. We're going to save those for the MapReduce Nuggets. 
+
+So the NameNode, DataNode and Secondary NameNode are really the core roles of HDFS. The NameNode, as we saw here, is the controller.
+It's the controller that handles all file system operations. 
+So any request that comes in to the file system to create a directory to create a file or to read and write a file is going to go through the NameNode. 
+The NameNode, essentially, just manages the file system namespace, as we call that.
+
+So it holds in memory a snapshot of what the file system looks like. It also handles block mappings. 
+We're going to get into blocks on the next slide when we get into the internals of HDFS. 
+But essentially, whenever you put a file into HDFS, it's going to break that file up into blocks and spread it across all of the DataNodes.
+
+So the NameNode knows where all of those blocks are within the cluster. The DataNodes are our workhorses of the system. 
+They're the ones that are actually going to be doing all of the block operations. 
+Sure, they're going to be receiving instructions from the NameNode of where to put the blocks and how to put the blocks. But the DataNodes are going to be the ones that actually do it. 
+
+And here's a good example. Let's say that we're a client. We're sitting inside of the terminal or some command-line interface writing Pig scripts or Hive queries, and we want data out of the cluster.
+So we say, hey, cluster, give us some data. The client will actually communicate with the NameNode and say, hey, NameNode, where are all of these blocks, and what DataNodes do they sit on? 
+The NameNode will then send that list back to the client, and the client will then communicate directly with the DataNodes where the DataNodes will serve those blocks back to the client.
+And the same works for writing. 
+
+DataNodes are also responsible for replication. And while, again, the NameNode's going to be the controller here. It's going to be the one sending the instructions and where to replicate. 
+The DataNodes are actually going to be the ones that do the physical replication.
+
+The Secondary NameNode, as the name doesn't imply, is not really a Secondary NameNode. 
+It's not this high-availability solution for our NameNode. It's not going to do automatic failover if the NameNode goes down. 
+In fact, a lot of people in the community are renaming this to the checkpoint node, because that's really what it is.
+
+It's just there to take a snapshot of the NameNode every now and then. And so it's our backup. It's like System Restore in Windows. That's essentially what it. 
+It's System Restore for the NameNode. More on the internals of those node types on the next slide.
+
+Now let's turn our attention to the right-hand side, where we have a large multi-rack cluster set up. And you can see we also broke out our roles into their own separate servers, even their own separate servers in their own rack. And that's just to show you that for learning purposes you can put these all on one node.
+
+00:06:36
+You can break them out into separate nodes. Or in the real world, you can even break them out into separate nodes in their own racks. With the multi-cluster implementation, we have a few more challenges that present themselves. The first one is going to be data loss prevention.
+
+00:06:52
+If you remember in the first Nugget, we talked about how HDFS is reliable because it uses replication. It uses a software solution via replication to ensure that we have multiple copies of data across the cluster, rather than a hardware solution, such as rate.
+
+00:07:07
+And it does this by ensuring that there are multiple copies of the data, the blocks across our cluster. And if we were to lose a single node, it's not a big deal. The NameNode has a map where all these blocks are across all the data nodes in the cluster. So if we lose a node, the NameNode's going to recognize that and say, hey, I know what blocks are on that note, and I'll just re-replicate those blocks across the cluster.
+
+00:07:30
+Now what happens if we lose an entire rack? Ruh-roh, Shaggy. Exactly, data loss. This is where rack awareness can help us out with the first challenge. And it does this by understanding our network topology. Now this is kind of a manual thing. It is a manual thing, not kind of, totally is a manual thing.
+
+00:07:51
+We need to describe our network topology to the NameNode. But once it understands it and it is rack aware, any time data comes in to our cluster, the NameNode is going to ensure that multiple copies of the data sit on multiple racks. So now if we lose a whole rack due to a power loss or something, not a problem.
+
+00:08:11
+The NameNode knows what data was on that rack, and it can re-replicate it across the remaining racks in our cluster. The second challenge we have a multi-rack cluster is network performance. Bandwidth, it's a scarce resource. Now we're going to make an assumption here that inter-rack communication is much higher bandwidth, lower latency than cross-rack communication.
+
+00:08:36
+So with that assumption, wouldn't it be great if rack awareness could keep our bulky flows inside of the rack? It can. It can, because, again, it knows where all the blocks are. It knows what racks they sit on. So whenever possible, if it can get all the data off of a single rack, it will do it.
+
+00:08:54
+And that'll take the heat off of our core switches and ensure optimal network utilization. So rack awareness is pretty awesome stuff, and I'll show you how to configure it when we get into configuring and managing HDFS in a future Nugget. Those are going to be some of the defining features of HDFS, rack awareness along with reliable storage and high throughput at all levels, at the single-rack small cluster level or the multi-rack large cluster level.
+
+00:09:19
+Let's head over to our next slide, where we'll get familiar with the internals of HDFS and more familiar with the roles and responsibilities of each node type. Let's start by digging into each node a little bit further. The first one we're going to look at here is the NameNode.
+
+00:09:32
+And the NameNode is the single most important node in our cluster. Why? Because it's a single point of failure. The NameNode, everything goes through to communicate. It's our controller. It contains the file system metadata and holds in memory a map of our entire cluster.
+
+00:09:49
+So if the NameNode goes down, the cluster is down. And while there are no high-availability solutions out of the box for the NameNode, there are things that we can implement that will ensure that if a disaster does occur we can get it back up and running in a relatively short amount of time, things like Secondary NameNodes, which we'll talk about shortly.
+
+00:10:06
+But also, you'll want your NameNode to be the beefiest node in your cluster, lots of power and lots of RAM and rate-enabled. Now back to this file system metadata stuff. The NameNode holds in memory a snapshot of the entire file system. It looks something like this, where it tracks all the files, tracks the replication value, which, by the way, is a default of 3, but you can override the replication factor when you put a file into HDFS.
+
+00:10:31
+And that's going to determine how many blocks of each file are out there. Then it also holds a mapping of block IDs to DataNodes. So it'll look something like this. And the NameNode stores all of that in memory. The NameNode also has something called the edit log or a journal that keeps track of all the transactions.
+
+00:10:51
+Now it doesn't actually put data into here. That would be a bottleneck if it had to write and manage edit logs. But any client that requests information or changes information or puts something in HDFS, the client is the one that actually writes that information into the edit logs.
+
+00:11:06
+Here's how this works. Let's get really down into the details here. Again, the NameNode stores a snapshot of the file system in memory. So what does it do with all the changes? Again, it stores them inside of the edit log. All file system modifications go into the edit log.
+
+00:11:21
+How does it take information from the edit logs and get it in memory? Well, that's going to take a reboot of the NameNode or a checkpoint process. So what happens then is during a checkpoint or a reboot, which forces a checkpoint, the NameNode is going to take what's in the memory, persist it to this.
+
+00:11:37
+And then it's going to merge the edit logs with that file that's persisted to disk. That file, by the way, is called FS image, file system image. Then when the NameNode reboots, it's going to reload what's in FS image into memory, and we'll have clear edit logs.
+
+00:11:52
+That's great. That's how that process works. What if we don't reboot the NameNode very often? Which in a production environment, you wouldn't. What that means is these edit logs are just going to keep growing and growing and growing. And if we were to lose the NameNode to a catastrophic event, we've just lost all the changes to our system.
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 
 
 
